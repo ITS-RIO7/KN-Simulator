@@ -35,9 +35,11 @@ assets/game/cannon.min.js      Cannon.js 0.6.2 (bundled)
 ## The city
 
 Generated procedurally from a fixed seed (`20261104`) — 7 × 7 blocks, roads
-14 units wide, buildings 7–70 units tall, parks with trees, dashed lane
+14 units wide, buildings 7–57 units tall, parks with trees, dashed lane
 markings, a rooftop antenna on the tall ones. Same seed always gives the same
 city, so the layout is stable between runs.
+
+The drone starts 48 units above the walker, looking down over the streets.
 
 ## Bridge between Flutter and the 3D scene
 

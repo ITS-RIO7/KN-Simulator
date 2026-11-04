@@ -26,7 +26,7 @@
     droneMaxY: 170,
     camDist: 7.4,
     camPitch: 0.30,
-    dronePitch: -0.38
+    dronePitch: -0.52
   };
   var PITCH = CFG.blockSize + CFG.roadWidth;
   var HALF = CFG.blocks * PITCH / 2;
@@ -55,7 +55,7 @@
   }
 
   var scene = new THREE.Scene();
-  scene.fog = new THREE.Fog(0x16222e, 150, 560);
+  scene.fog = new THREE.Fog(0x33495c, 120, 430);
 
   var camera = new THREE.PerspectiveCamera(64, 1, 0.1, 1600);
   camera.position.set(SPAWN.x, 4, SPAWN.z - 8);
@@ -67,8 +67,8 @@
     side: THREE.BackSide,
     depthWrite: false,
     uniforms: {
-      topColor: { value: new THREE.Color(0x08131f) },
-      bottomColor: { value: new THREE.Color(0x24405a) }
+      topColor: { value: new THREE.Color(0x0d2136) },
+      bottomColor: { value: new THREE.Color(0x3a5f7d) }
     },
     vertexShader: [
       'varying float vY;',
@@ -92,10 +92,14 @@
   scene.add(sky);
 
   // ------------------------------------------------------------- lights
-  var hemi = new THREE.HemisphereLight(0x9fd8ff, 0x1b2430, 0.75);
+  var hemi = new THREE.HemisphereLight(0xcfe8ff, 0x33404d, 1.6);
   scene.add(hemi);
 
-  var sun = new THREE.DirectionalLight(0xfff0d0, 1.15);
+  var fill = new THREE.DirectionalLight(0x7fb6e0, 0.55);
+  fill.position.set(-70, 80, -60);
+  scene.add(fill);
+
+  var sun = new THREE.DirectionalLight(0xfff3dc, 2.2);
   sun.position.set(70, 140, 50);
   sun.castShadow = true;
   sun.shadow.mapSize.width = 1024;
@@ -113,7 +117,7 @@
   // ------------------------------------------------------------- ground
   var groundMesh = new THREE.Mesh(
     new THREE.PlaneGeometry(1800, 1800),
-    new THREE.MeshLambertMaterial({ color: 0x14181d })
+    new THREE.MeshLambertMaterial({ color: 0x1d232a })
   );
   groundMesh.rotation.x = -Math.PI / 2;
   groundMesh.receiveShadow = true;
@@ -148,7 +152,7 @@
 
   function buildCityData() {
     var rand = mulberry32(CFG.seed);
-    var palette = [0x2b3a4a, 0x33414f, 0x263140, 0x3a4552, 0x2f3b47, 0x3d4a56, 0x243444, 0x404e5c];
+    var palette = [0x55677a, 0x61728a, 0x4a5a6b, 0x6b7a8c, 0x5a6b7d, 0x707f92, 0x46586b, 0x7c8b9c];
     var inset = 2.0;
     var gap = 2.2;
 
@@ -212,7 +216,7 @@
 
     // plinths (the raised pavement each block sits on)
     var plinthGeo = new THREE.BoxGeometry(1, 1, 1);
-    var plinthMat = new THREE.MeshLambertMaterial({ color: 0x1f262e });
+    var plinthMat = new THREE.MeshLambertMaterial({ color: 0x2a323b });
     var plinthMesh = new THREE.InstancedMesh(plinthGeo, plinthMat, plinths.length);
     plinthMesh.receiveShadow = true;
     for (var p = 0; p < plinths.length; p++) {
@@ -264,7 +268,7 @@
     // parks — green plinth plus a few trees
     if (parks.length) {
       var parkGeo = new THREE.BoxGeometry(1, 1, 1);
-      var parkMat = new THREE.MeshLambertMaterial({ color: 0x1c3a26 });
+      var parkMat = new THREE.MeshLambertMaterial({ color: 0x2f5a3a });
       var parkMesh = new THREE.InstancedMesh(parkGeo, parkMat, parks.length);
       parkMesh.receiveShadow = true;
       for (var k = 0; k < parks.length; k++) {
@@ -293,7 +297,7 @@
       var trunkMesh = new THREE.InstancedMesh(trunkGeo, trunkMat, trees.length);
       trunkMesh.castShadow = true;
       var leafGeo = new THREE.IcosahedronGeometry(1.5, 0);
-      var leafMat = new THREE.MeshLambertMaterial({ color: 0x2f6b3c });
+      var leafMat = new THREE.MeshLambertMaterial({ color: 0x3f8a4e });
       var leafMesh = new THREE.InstancedMesh(leafGeo, leafMat, trees.length);
       leafMesh.castShadow = true;
       for (var m = 0; m < trees.length; m++) {
@@ -333,7 +337,7 @@
       }
     }
     var dGeo = new THREE.BoxGeometry(0.32, 0.06, 3.4);
-    var dMat = new THREE.MeshLambertMaterial({ color: 0x8f9aa6 });
+    var dMat = new THREE.MeshLambertMaterial({ color: 0xaab6c2 });
     var dMesh = new THREE.InstancedMesh(dGeo, dMat, dashes.length);
     for (var q = 0; q < dashes.length; q++) {
       dummy.position.set(dashes[q].x, 0.03, dashes[q].z);
@@ -518,8 +522,8 @@
     if (mode === 'drone') {
       dronePos.set(
         playerBody.position.x,
-        playerBody.position.y + 34,
-        playerBody.position.z + 26
+        Math.max(playerBody.position.y + 48, 44),
+        playerBody.position.z + 18
       );
       dronePitch = CFG.dronePitch;
       document.body.classList.add('drone-mode');
@@ -537,7 +541,7 @@
     playerBody.velocity.set(0, 0, 0);
     camYaw = 0;
     camPitch = CFG.camPitch;
-    dronePos.set(SPAWN.x, 60, SPAWN.z + 30);
+    dronePos.set(SPAWN.x, 48, SPAWN.z + 18);
     dronePitch = CFG.dronePitch;
     if (mode === 'drone') { setMode('walk'); }
   }
