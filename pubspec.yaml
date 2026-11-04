@@ -1,7 +1,7 @@
 name: kn_simulator
-description: KN Simulator - Flutter project scaffold.
+description: "KN City — a 3D city you can walk through or fly over with a drone."
 publish_to: 'none'
-version: 0.1.0+1
+version: 1.0.0+1
 
 environment:
   sdk: '>=3.4.0 <4.0.0'
@@ -9,6 +9,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  cupertino_icons: ^1.0.8
+  webview_flutter: ^4.7.0
   vector_math: ^2.1.4
 
 dev_dependencies:
@@ -18,3 +20,5 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  assets:
+    - assets/game/

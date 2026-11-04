@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+<title>KN City</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html, body {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: #06090d;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: none;
+  }
+
+  #scene {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
+    touch-action: none;
+  }
+
+  /* ---- HUD shell: container ignores touches, children catch them ---- */
+  #ui {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+  }
+
+  .ui { pointer-events: auto; }
+
+  /* ---- movement stick ---- */
+  #stick {
+    position: absolute;
+    left: 22px;
+    bottom: 22px;
+    width: 132px;
+    height: 132px;
+    border-radius: 50%;
+    background: rgba(9, 18, 26, 0.42);
+    border: 1.5px solid rgba(0, 229, 255, 0.32);
+    backdrop-filter: blur(2px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    touch-action: none;
+  }
+
+  #knob {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: rgba(0, 229, 255, 0.30);
+    border: 1.5px solid rgba(0, 229, 255, 0.75);
+    box-shadow: 0 0 14px rgba(0, 229, 255, 0.35);
+    pointer-events: none;
+  }
+
+  /* ---- vertical fly buttons (drone only) ---- */
+  #btns {
+    position: absolute;
+    right: 22px;
+    bottom: 24px;
+    display: none;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  body.drone-mode #btns { display: flex; }
+  body.drone-mode #btnJump { display: none; }
+
+  .round {
+    width: 62px;
+    height: 62px;
+    border-radius: 50%;
+    border: 1.5px solid rgba(0, 229, 255, 0.35);
+    background: rgba(9, 18, 26, 0.5);
+    color: #d6f7ff;
+    font-size: 20px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    touch-action: none;
+  }
+
+  .round:active { background: rgba(0, 229, 255, 0.28); }
+
+  #btnJump {
+    position: absolute;
+    right: 26px;
+    bottom: 30px;
+    width: 76px;
+    height: 76px;
+    font-size: 13px;
+    letter-spacing: 1px;
+    color: #d6f7ff;
+    border-radius: 50%;
+    border: 1.5px solid rgba(0, 229, 255, 0.35);
+    background: rgba(9, 18, 26, 0.5);
+    touch-action: none;
+  }
+
+  #btnJump:active { background: rgba(0, 229, 255, 0.28); }
+
+  /* ---- hint + loader ---- */
+  #hint {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: 18px;
+    padding: 7px 14px;
+    border-radius: 20px;
+    background: rgba(6, 12, 18, 0.62);
+    color: #9fc6d6;
+    font-size: 11.5px;
+    letter-spacing: 0.4px;
+    white-space: nowrap;
+    animation: fadeHint 9s ease forwards;
+  }
+
+  @keyframes fadeHint {
+    0%, 62% { opacity: 1; }
+    100% { opacity: 0; }
+  }
+
+  #loading {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #06090d;
+    color: #00e5ff;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 4px;
+  }
+</style>
+</head>
+<body>
+<canvas id="scene"></canvas>
+
+<div id="ui">
+  <div id="stick" class="ui"><div id="knob"></div></div>
+
+  <div id="btns" class="ui">
+    <button id="btnUp" class="ui round">&#9650;</button>
+    <button id="btnDown" class="ui round">&#9660;</button>
+  </div>
+
+  <button id="btnJump" class="ui">JUMP</button>
+
+  <div id="hint">Left stick &mdash; move &nbsp;•&nbsp; Drag &mdash; look &nbsp;•&nbsp; Walk / Drone button &mdash; switch view</div>
+  <div id="loading">BUILDING CITY</div>
+</div>
+
+<script src="three.min.js"></script>
+<script src="cannon.min.js"></script>
+<script src="main.js"></script>
+</body>
+</html>
