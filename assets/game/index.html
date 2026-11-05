@@ -68,10 +68,20 @@
   #btns {
     position: absolute;
     right: 22px;
-    bottom: 24px;
+    bottom: 96px;
     display: none;
     flex-direction: column;
     gap: 12px;
+  }
+
+  /* ---- turn left / right (both modes) ---- */
+  #arrows {
+    position: absolute;
+    right: 22px;
+    bottom: 24px;
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
   }
 
   body.drone-mode #btns { display: flex; }
@@ -96,8 +106,8 @@
 
   #btnJump {
     position: absolute;
-    right: 26px;
-    bottom: 30px;
+    right: 24px;
+    bottom: 100px;
     width: 76px;
     height: 76px;
     font-size: 13px;
@@ -157,9 +167,14 @@
     <button id="btnDown" class="ui round">&#9660;</button>
   </div>
 
+  <div id="arrows" class="ui">
+    <button id="btnLeft" class="ui round">&#9664;</button>
+    <button id="btnRight" class="ui round">&#9654;</button>
+  </div>
+
   <button id="btnJump" class="ui">JUMP</button>
 
-  <div id="hint">Left stick &mdash; move &nbsp;•&nbsp; Drag &mdash; look &nbsp;•&nbsp; Walk / Drone button &mdash; switch view</div>
+  <div id="hint">Left stick &mdash; move &nbsp;•&nbsp; &#9664; &#9654; &mdash; turn &nbsp;•&nbsp; Drag &mdash; look &nbsp;•&nbsp; Walk / Drone &mdash; switch view</div>
   <div id="loading">BUILDING CITY</div>
 </div>
 

@@ -398,7 +398,12 @@
   var facing = 0;
   var jumpQueued = false;
 
-  var input = { x: 0, y: 0, up: false, down: false, sprint: false };
+  var input = {
+    x: 0, y: 0,
+    up: false, down: false,
+    left: false, right: false,
+    sprint: false
+  };
 
   // ------------------------------------------------------------- controls
   var stickEl = document.getElementById('stick');
@@ -506,6 +511,8 @@
 
   bindHold('btnUp', 'up');
   bindHold('btnDown', 'down');
+  bindHold('btnLeft', 'left');
+  bindHold('btnRight', 'right');
 
   var jumpBtn = document.getElementById('btnJump');
   jumpBtn.addEventListener('pointerdown', function (e) {
@@ -579,6 +586,10 @@
     } else {
       playerBody.velocity.x *= Math.pow(0.001, dt);
       playerBody.velocity.z *= Math.pow(0.001, dt);
+      // turning on the spot: face the way the camera is looking
+      if (input.left || input.right) {
+        facing += shortestAngle(facing, camYaw) * Math.min(1, dt * 9);
+      }
     }
 
     var grounded = playerBody.position.y <= PLAYER_R + 0.14;
@@ -678,6 +689,11 @@
     var dt = Math.min(clock.getDelta(), 0.05);
 
     world.step(1 / 60, dt, 3);
+
+    // left / right arrows turn the view in both modes
+    var turnRate = 2.0;
+    if (input.left) { camYaw -= turnRate * dt; }
+    if (input.right) { camYaw += turnRate * dt; }
 
     if (mode === 'walk') {
       updateWalk(dt);

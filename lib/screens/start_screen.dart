@@ -88,6 +88,7 @@ class StartScreen extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: const [
                       _ControlRow(icon: Icons.gamepad, text: 'Left stick — walk / fly'),
+                      _ControlRow(icon: Icons.swap_horiz, text: '◀ ▶ buttons — turn left / right'),
                       _ControlRow(icon: Icons.swipe, text: 'Drag the screen — look around'),
                       _ControlRow(icon: Icons.arrow_upward, text: 'Jump — hop over the kerb'),
                       _ControlRow(icon: Icons.videocam, text: 'Walk / Drone — switch view'),
