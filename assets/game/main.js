@@ -556,7 +556,17 @@
   window.KN = {
     setMode: setMode,
     toggleMode: toggleMode,
-    reset: reset
+    reset: reset,
+    state: function () {
+      return {
+        mode: mode,
+        x: playerBody.position.x,
+        y: playerBody.position.y,
+        z: playerBody.position.z,
+        yaw: camYaw,
+        input: { x: input.x, y: input.y }
+      };
+    }
   };
 
   // ------------------------------------------------------------- update
@@ -574,8 +584,9 @@
     tmpFwd.set(Math.sin(camYaw), 0, Math.cos(camYaw));
     tmpRight.set(Math.cos(camYaw), 0, -Math.sin(camYaw));
 
-    var wx = tmpRight.x * input.x + tmpFwd.x * input.y;
-    var wz = tmpRight.z * input.x + tmpFwd.z * input.y;
+    // stick left/right turns (handled in animate), stick up/down walks
+    var wx = tmpFwd.x * input.y;
+    var wz = tmpFwd.z * input.y;
     var len = Math.sqrt(wx * wx + wz * wz);
 
     if (len > 0.01) {
@@ -587,7 +598,7 @@
       playerBody.velocity.x *= Math.pow(0.001, dt);
       playerBody.velocity.z *= Math.pow(0.001, dt);
       // turning on the spot: face the way the camera is looking
-      if (input.left || input.right) {
+      if (input.left || input.right || Math.abs(input.x) > 0.01) {
         facing += shortestAngle(facing, camYaw) * Math.min(1, dt * 9);
       }
     }
@@ -640,8 +651,8 @@
     tmpRight.set(Math.cos(camYaw), 0, -Math.sin(camYaw));
 
     var sp = CFG.droneSpeed;
-    dronePos.x += (tmpRight.x * input.x + tmpFwd.x * input.y) * sp * dt;
-    dronePos.z += (tmpRight.z * input.x + tmpFwd.z * input.y) * sp * dt;
+    dronePos.x += tmpFwd.x * input.y * sp * dt;
+    dronePos.z += tmpFwd.z * input.y * sp * dt;
     if (input.up) { dronePos.y += sp * dt; }
     if (input.down) { dronePos.y -= sp * dt; }
 
@@ -690,10 +701,11 @@
 
     world.step(1 / 60, dt, 3);
 
-    // left / right arrows turn the view in both modes
+    // left / right turns the view in both modes: stick and the ◀ ▶ buttons
     var turnRate = 2.0;
     if (input.left) { camYaw -= turnRate * dt; }
     if (input.right) { camYaw += turnRate * dt; }
+    camYaw += input.x * 2.2 * dt;
 
     if (mode === 'walk') {
       updateWalk(dt);

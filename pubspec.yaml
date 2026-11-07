@@ -1,7 +1,7 @@
 name: kn_simulator
 description: "KN City — a 3D city you can walk through or fly over with a drone."
 publish_to: 'none'
-version: 1.0.1+2
+version: 1.0.2+3
 
 environment:
   sdk: '>=3.4.0 <4.0.0'

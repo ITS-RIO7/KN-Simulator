@@ -13,7 +13,7 @@ and fly over the whole city. Landscape only.
 
 | Input | Walk mode | Drone mode |
 |---|---|---|
-| Left stick | Move | Fly forward / strafe |
+| Left stick | Walk forward / back, turn left / right | Fly forward / back, turn left / right |
 | ◀ / ▶ (bottom right) | Turn left / right | Turn left / right |
 | Drag the screen | Orbit the camera | Look around |
 | JUMP | Hop | — |
