@@ -26,7 +26,7 @@
     droneMaxY: 170,
     camDist: 7.4,
     camPitch: 0.30,
-    dronePitch: -0.52
+    dronePitch: -0.66
   };
   var PITCH = CFG.blockSize + CFG.roadWidth;
   var HALF = CFG.blocks * PITCH / 2;
@@ -522,15 +522,28 @@
   });
 
   // ------------------------------------------------------------- modes
+  function tallestNear(x, z, radius) {
+    var best = 0;
+    for (var i = 0; i < buildings.length; i++) {
+      var b = buildings[i];
+      if (Math.abs(b.x - x) <= radius && Math.abs(b.z - z) <= radius && b.h > best) {
+        best = b.h;
+      }
+    }
+    return best;
+  }
+
   function setMode(next) {
     next = (next === 'drone') ? 'drone' : 'walk';
     if (next === mode) { return; }
     mode = next;
     if (mode === 'drone') {
+      var px = playerBody.position.x;
+      var pz = playerBody.position.z;
       dronePos.set(
-        playerBody.position.x,
-        Math.max(playerBody.position.y + 48, 44),
-        playerBody.position.z + 18
+        px,
+        Math.max(playerBody.position.y + 46, tallestNear(px, pz, 40) + 13, 50),
+        pz + 26
       );
       dronePitch = CFG.dronePitch;
       document.body.classList.add('drone-mode');
@@ -548,7 +561,7 @@
     playerBody.velocity.set(0, 0, 0);
     camYaw = 0;
     camPitch = CFG.camPitch;
-    dronePos.set(SPAWN.x, 48, SPAWN.z + 18);
+    dronePos.set(SPAWN.x, Math.max(62, tallestNear(SPAWN.x, SPAWN.z, 40) + 13), SPAWN.z + 26);
     dronePitch = CFG.dronePitch;
     if (mode === 'drone') { setMode('walk'); }
   }
