@@ -40,6 +40,9 @@ Generated procedurally from a fixed seed (`20261104`) — 7 × 7 blocks, roads
 markings, a rooftop antenna on the tall ones. Same seed always gives the same
 city, so the layout is stable between runs.
 
+The look is bright daytime: a 12-colour building palette, white lane markings,
+green land around the city and a light blue sky that the fog fades into.
+
 The drone starts 48 units above the walker, looking down over the streets.
 
 ## Bridge between Flutter and the 3D scene

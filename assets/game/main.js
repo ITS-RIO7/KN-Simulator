@@ -26,7 +26,7 @@
     droneMaxY: 170,
     camDist: 7.4,
     camPitch: 0.30,
-    dronePitch: -0.66
+    dronePitch: -0.50
   };
   var PITCH = CFG.blockSize + CFG.roadWidth;
   var HALF = CFG.blocks * PITCH / 2;
@@ -55,7 +55,7 @@
   }
 
   var scene = new THREE.Scene();
-  scene.fog = new THREE.Fog(0x33495c, 120, 430);
+  scene.fog = new THREE.Fog(0xa8cde9, 170, 620);
 
   var camera = new THREE.PerspectiveCamera(64, 1, 0.1, 1600);
   camera.position.set(SPAWN.x, 4, SPAWN.z - 8);
@@ -67,8 +67,8 @@
     side: THREE.BackSide,
     depthWrite: false,
     uniforms: {
-      topColor: { value: new THREE.Color(0x0d2136) },
-      bottomColor: { value: new THREE.Color(0x3a5f7d) }
+      topColor: { value: new THREE.Color(0x4a8fcc) },
+      bottomColor: { value: new THREE.Color(0xa8cde9) }
     },
     vertexShader: [
       'varying float vY;',
@@ -83,7 +83,7 @@
       'uniform vec3 bottomColor;',
       'void main() {',
       '  float t = clamp(vY * 0.5 + 0.5, 0.0, 1.0);',
-      '  vec3 c = mix(bottomColor, topColor, pow(t, 0.75));',
+      '  vec3 c = mix(bottomColor, topColor, pow(t, 1.1));',
       '  gl_FragColor = vec4(c, 1.0);',
       '}'
     ].join('\n')
@@ -92,14 +92,14 @@
   scene.add(sky);
 
   // ------------------------------------------------------------- lights
-  var hemi = new THREE.HemisphereLight(0xcfe8ff, 0x33404d, 1.6);
+  var hemi = new THREE.HemisphereLight(0xe6f3ff, 0x7a8b99, 1.15);
   scene.add(hemi);
 
-  var fill = new THREE.DirectionalLight(0x7fb6e0, 0.55);
+  var fill = new THREE.DirectionalLight(0xbfe0ff, 0.45);
   fill.position.set(-70, 80, -60);
   scene.add(fill);
 
-  var sun = new THREE.DirectionalLight(0xfff3dc, 2.2);
+  var sun = new THREE.DirectionalLight(0xffffff, 2.0);
   sun.position.set(70, 140, 50);
   sun.castShadow = true;
   sun.shadow.mapSize.width = 1024;
@@ -115,13 +115,23 @@
   scene.add(sun.target);
 
   // ------------------------------------------------------------- ground
+  // green land out to the horizon, with the city's asphalt square on top
   var groundMesh = new THREE.Mesh(
-    new THREE.PlaneGeometry(1800, 1800),
-    new THREE.MeshLambertMaterial({ color: 0x1d232a })
+    new THREE.PlaneGeometry(4000, 4000),
+    new THREE.MeshLambertMaterial({ color: 0x74a35f })
   );
   groundMesh.rotation.x = -Math.PI / 2;
   groundMesh.receiveShadow = true;
   scene.add(groundMesh);
+
+  var cityBase = new THREE.Mesh(
+    new THREE.PlaneGeometry(HALF * 2 + 20, HALF * 2 + 20),
+    new THREE.MeshLambertMaterial({ color: 0x4a4f57 })
+  );
+  cityBase.rotation.x = -Math.PI / 2;
+  cityBase.position.y = 0.01;
+  cityBase.receiveShadow = true;
+  scene.add(cityBase);
 
   // ------------------------------------------------------------- physics
   var world = new CANNON.World();
@@ -152,7 +162,8 @@
 
   function buildCityData() {
     var rand = mulberry32(CFG.seed);
-    var palette = [0x55677a, 0x61728a, 0x4a5a6b, 0x6b7a8c, 0x5a6b7d, 0x707f92, 0x46586b, 0x7c8b9c];
+    var palette = [0xe2574c, 0xf2a03d, 0xf4d35e, 0x62c370, 0x4d96ff, 0x9b72cf,
+                   0xff8fb1, 0x3ec1b6, 0xff6b6b, 0x45b7d1, 0x8bc34a, 0xf7a1c4];
     var inset = 2.0;
     var gap = 2.2;
 
@@ -216,7 +227,7 @@
 
     // plinths (the raised pavement each block sits on)
     var plinthGeo = new THREE.BoxGeometry(1, 1, 1);
-    var plinthMat = new THREE.MeshLambertMaterial({ color: 0x2a323b });
+    var plinthMat = new THREE.MeshLambertMaterial({ color: 0x9aa3ad });
     var plinthMesh = new THREE.InstancedMesh(plinthGeo, plinthMat, plinths.length);
     plinthMesh.receiveShadow = true;
     for (var p = 0; p < plinths.length; p++) {
@@ -252,7 +263,7 @@
     // rooftop antennas
     if (antennas.length) {
       var aGeo = new THREE.BoxGeometry(0.22, 1, 0.22);
-      var aMat = new THREE.MeshLambertMaterial({ color: 0x6d7a86 });
+      var aMat = new THREE.MeshLambertMaterial({ color: 0x8b95a1 });
       var aMesh = new THREE.InstancedMesh(aGeo, aMat, antennas.length);
       for (var a = 0; a < antennas.length; a++) {
         dummy.position.set(antennas[a].x, antennas[a].y, antennas[a].z);
@@ -268,7 +279,7 @@
     // parks — green plinth plus a few trees
     if (parks.length) {
       var parkGeo = new THREE.BoxGeometry(1, 1, 1);
-      var parkMat = new THREE.MeshLambertMaterial({ color: 0x2f5a3a });
+      var parkMat = new THREE.MeshLambertMaterial({ color: 0x59b95f });
       var parkMesh = new THREE.InstancedMesh(parkGeo, parkMat, parks.length);
       parkMesh.receiveShadow = true;
       for (var k = 0; k < parks.length; k++) {
@@ -293,11 +304,11 @@
         }
       }
       var trunkGeo = new THREE.CylinderGeometry(0.22, 0.28, 2.2, 6);
-      var trunkMat = new THREE.MeshLambertMaterial({ color: 0x3a2a1e });
+      var trunkMat = new THREE.MeshLambertMaterial({ color: 0x6b4a2f });
       var trunkMesh = new THREE.InstancedMesh(trunkGeo, trunkMat, trees.length);
       trunkMesh.castShadow = true;
       var leafGeo = new THREE.IcosahedronGeometry(1.5, 0);
-      var leafMat = new THREE.MeshLambertMaterial({ color: 0x3f8a4e });
+      var leafMat = new THREE.MeshLambertMaterial({ color: 0x2e8b3d });
       var leafMesh = new THREE.InstancedMesh(leafGeo, leafMat, trees.length);
       leafMesh.castShadow = true;
       for (var m = 0; m < trees.length; m++) {
@@ -337,7 +348,7 @@
       }
     }
     var dGeo = new THREE.BoxGeometry(0.32, 0.06, 3.4);
-    var dMat = new THREE.MeshLambertMaterial({ color: 0xaab6c2 });
+    var dMat = new THREE.MeshLambertMaterial({ color: 0xffffff });
     var dMesh = new THREE.InstancedMesh(dGeo, dMat, dashes.length);
     for (var q = 0; q < dashes.length; q++) {
       dummy.position.set(dashes[q].x, 0.03, dashes[q].z);
@@ -355,8 +366,8 @@
   var leftLeg, rightLeg, leftArm, rightArm;
 
   function buildPlayerModel() {
-    var bodyMat = new THREE.MeshLambertMaterial({ color: 0x00e5ff });
-    var darkMat = new THREE.MeshLambertMaterial({ color: 0x0f6b7a });
+    var bodyMat = new THREE.MeshLambertMaterial({ color: 0x0f7bd6 });
+    var darkMat = new THREE.MeshLambertMaterial({ color: 0x123a5c });
     var headMat = new THREE.MeshLambertMaterial({ color: 0xe8f6ff });
 
     var torso = new THREE.Mesh(new THREE.CapsuleGeometry(0.3, 0.62, 4, 10), bodyMat);
@@ -542,8 +553,8 @@
       var pz = playerBody.position.z;
       dronePos.set(
         px,
-        Math.max(playerBody.position.y + 46, tallestNear(px, pz, 40) + 13, 50),
-        pz + 26
+        Math.min(Math.max(playerBody.position.y + 40, tallestNear(px, pz, 26) + 10, 45), 60),
+        pz + 22
       );
       dronePitch = CFG.dronePitch;
       document.body.classList.add('drone-mode');
@@ -561,7 +572,7 @@
     playerBody.velocity.set(0, 0, 0);
     camYaw = 0;
     camPitch = CFG.camPitch;
-    dronePos.set(SPAWN.x, Math.max(62, tallestNear(SPAWN.x, SPAWN.z, 40) + 13), SPAWN.z + 26);
+    dronePos.set(SPAWN.x, 48, SPAWN.z + 22);
     dronePitch = CFG.dronePitch;
     if (mode === 'drone') { setMode('walk'); }
   }
